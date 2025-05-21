@@ -5,7 +5,7 @@ from sklearn.model_selection import train_test_split
 from torch_geometric.utils import degree, to_networkx
 import matplotlib.pyplot as plt
 import torch.nn.init as init
-
+from tqdm import tqdm
 
 from sklearn.metrics import roc_auc_score
 from bprloss import  compute_bpr_loss
