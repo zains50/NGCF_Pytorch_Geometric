@@ -1,11 +1,7 @@
-import pickle
 
-import networkx as nx
 import torch
 import torch.nn as nn
-from attrdict import AttrDict
 from sklearn.model_selection import train_test_split
-from tqdm import tqdm
 from torch_geometric.utils import degree, to_networkx
 import matplotlib.pyplot as plt
 import torch.nn.init as init
