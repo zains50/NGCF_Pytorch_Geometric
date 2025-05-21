@@ -19,29 +19,6 @@ import torch
 from torch_geometric.utils import negative_sampling
 
 
-# Custom negative sampling function
-def custom_negative_sampling(edge_index, num_nodes, num_neg_samples):
-    # Generate negative samples
-    neg_edge_index = negative_sampling(
-        edge_index=edge_index,
-        num_nodes=num_nodes,
-        num_neg_samples=num_neg_samples,
-        method='sparse'
-    )
-
-    # Ensure negative source nodes are in range [0, 8000) and target in range [8000, 16000)
-    neg_src = neg_edge_index[0]
-    neg_dst = neg_edge_index[1]
-
-    # Mask out negative samples that are not in the desired ranges
-    mask_src = neg_src < num_users  # Ensure source is in range [0, 8000)
-    mask_dst = neg_dst >= num_users  # Ensure target is in range [8000, 16000)
-
-    # Apply masks to get valid negative samples
-    valid_neg_src = neg_src[mask_src & mask_dst]
-    valid_neg_dst = neg_dst[mask_src & mask_dst]
-
-    return torch.stack([valid_neg_src, valid_neg_dst], dim=0)
 
 
 device = "cuda"
@@ -55,7 +32,8 @@ num_nodes = num_users+num_items
 
 
 edge_index = data.edge_index
-
+homogeneous_edge_index = data.edge_index[[1,0]]
+data.edge_index = torch.cat([edge_index, homogeneous_edge_index], dim=1)
 
 # Convert back to PyTorch
 all_edge_index = data.edge_index
